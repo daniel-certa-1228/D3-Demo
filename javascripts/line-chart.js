@@ -5,7 +5,65 @@
 
 const drawChart = (arr) => {
 
+  // 1. set dimensions of SVG relative to chart width and window height - navbar
+  let margin = {top: 50, right: 50, bottom: 50, left: 50},
+    width = $('#chart').width() - margin.left - margin.right,
+    height = window.innerHeight - margin.top - margin.bottom - $('#nav').height();
+
+  // 2. create SVG appended to #chart, dimensions come from values set above
+  let svg = d3.select('#chart').append('svg')
+      .attr('width', width + margin.left + margin.right)
+      .attr('height', height + margin.top + margin.bottom)
+      .append('g')
+      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+  // 3. function to set scale for y-axis, mapped from 0 to highest temperature + 10
+  let yScale = d3.scaleLinear()
+      .domain([d3.min(arr, d => d.temp_max), d3.max(arr, d => d.temp_max) + 10])
+      .range([height, 0]);
+
+  // 4. function to set scale for x-axis, mapped to range of times in dataset
+  let xScale = d3.scaleTime()
+      .domain(d3.extent(arr, d => d.time))
+      .range([0, width]);
+
+  // 5. append dots for each temperature
+  svg.selectAll('.dot')
+      .data(arr)
+      .enter().append('circle')
+      .attr('class', 'dot')
+      .attr('cx', (d) => xScale(d.time))
+      .attr('cy', (d) => yScale(d.temp_max))
+      .attr('r', 2);
+
+  // 6. function to create line coordinates for each datum
+      //x is time, y is temperature
+  let line = d3.line()
+      .x(d => xScale(d.time))
+      .y(d => yScale(d.temp_max));
+
+  // 7. append path, moves in direction set by values in line
+  let path = svg.append('path')
+      .datum(arr)
+      .attr('d', line)
+      .attr('class', 'line');
+
+  // 8. append x-axis
+  svg.append('g')
+    .attr('transform', 'translate(0,' + height + ')')
+    .call(d3.axisBottom(xScale)
+    .ticks(d3.timeHour.every(6)));
+
+  // 9. append y-axis, add 'TEMPERATURE' label
+  svg.append('g')
+      .call(d3.axisLeft(yScale))
+      .append('text')
+      .attr('fill', '#000')
+      .text('Temperature (F)')
+      .attr('transform', 'rotate(-90)')
+      .attr('y', 5)
+      .attr('dy', '0.71em')
+      .attr('text-anchor', 'end');
 
   console.log(arr);
-
 }

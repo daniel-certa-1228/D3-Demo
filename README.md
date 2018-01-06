@@ -1,5 +1,7 @@
 # An Introduction to D3
 
+Presented by [Jeremy Wells](https://github.com/jsheridanwells)
+
 This repo contains boilerplate code for an introduction to the D3.js library. D3 is a javascript library that uses HTML, CSS, and SVG to bind data to DOM elements making possible an unlimited variety of data visualizations.
 
 The code in this repo can be used to create line charts showing 5-day weather forecasts for any given US zip code. A deployed example of this app can be found at [http://d3-weather-chart.surge.sh/](http://d3-weather-chart.surge.sh/).
